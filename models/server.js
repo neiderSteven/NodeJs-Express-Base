@@ -16,36 +16,18 @@ class Server {
 
     middlewares() {
 
+        // cors
+        this.app.use(cors());
+
+        // parseo y lectura del body
+        this.app.use(express.json());
+
         // directorio publico
         this.app.use(express.static('public'));
-        this.app.use(cors);
     }
 
     routes() {
-        this.app.get('/api', function (req, res) {
-            res.json({
-                ok: true,
-                mensaje: 'Get Api'
-            })
-        })
-        this.app.put('/api', function (req, res) {
-            res.json({
-                ok: true,
-                mensaje: 'Put Api'
-            })
-        })
-        this.app.post('/api', function (req, res) {
-            res.json({
-                ok: true,
-                mensaje: 'Post Api'
-            })
-        })
-        this.app.delete('/api', function (req, res) {
-            res.json({
-                ok: true,
-                mensaje: 'Delete Api'
-            })
-        })
+        this.app.use('/api/user', require('../routes/user'));
     }
 
     listen() {
