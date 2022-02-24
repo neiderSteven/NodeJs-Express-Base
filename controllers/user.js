@@ -1,4 +1,5 @@
 const { response } = require('express');
+const User = require('../models/user');
 
 const usersGet = (req, res = response) => {
 
@@ -11,14 +12,17 @@ const usersGet = (req, res = response) => {
         params: params
     })
 }
-const userCreate = (req, res = response) => {
+const userCreate = async (req, res = response) => {
 
     const body = req.body;
+    const user = new User(body);
+
+    await user.save();
 
     res.json({
         ok: true,
         mensaje: 'Post /controlador',
-        body: body
+        user: user
     })
 }
 const userUpdate = (req, res = response) => {
