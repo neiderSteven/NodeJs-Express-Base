@@ -1,21 +1,27 @@
 const { response } = require('express');
 const User = require('../models/user');
+const bcryptjs = require('bcryptjs');
 
-const usersGet = (req, res = response) => {
+const usersGet = async (req, res = response) => {
 
     // const { params } = req.query;
     const params = req.query;
+    users = await User.find();
 
     res.json({
         ok: true,
         mensaje: 'Get /controlador',
-        params: params
+        users: users
     })
 }
 const userCreate = async (req, res = response) => {
 
-    const body = req.body;
-    const user = new User(body);
+    const { name, email, password, img, role } = req.body;
+    const user = new User({ name, email, password, img, role });
+
+    // Encriptar contraseña
+    const salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync(password, salt);
 
     await user.save();
 
@@ -25,14 +31,22 @@ const userCreate = async (req, res = response) => {
         user: user
     })
 }
-const userUpdate = (req, res = response) => {
+const userUpdate = async (req, res = response) => {
 
-    const id = req.body.id;
+    const { id } = req.params;
+    const { password, google, ...rest } = req.body;
+
+    if (password) {
+        const salt = bcryptjs.genSaltSync();
+        rest.password = bcryptjs.hashSync(password, salt);
+    }
+
+    const user = await User.findOneAndUpdate(id, rest);
 
     res.json({
         ok: true,
         mensaje: 'Put /controlador',
-        id: id
+        user: user
     })
 }
 const userDelete = (req, res = response) => {

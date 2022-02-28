@@ -6,6 +6,9 @@
 
 - npm install nodemon
 - npm i express dotenv
+- npm i mongoose
+- npm i bcryptjs
+- npm i express-validator
 
 ## correr proyecto
 
