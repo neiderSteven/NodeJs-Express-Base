@@ -4,13 +4,18 @@ const bcryptjs = require('bcryptjs');
 
 const usersGet = async (req, res = response) => {
 
-    // const { params } = req.query;
-    const params = req.query;
-    users = await User.find();
+    const { limit = 5, skip = 1 } = req.query;
+
+    const [users, total] = await Promise.all([
+        User.find()
+            .limit(Number(limit))
+            .skip(Number(skip)),
+
+        User.countDocuments()
+    ]);
 
     res.json({
-        ok: true,
-        mensaje: 'Get /controlador',
+        total: total,
         users: users
     })
 }
@@ -44,8 +49,6 @@ const userUpdate = async (req, res = response) => {
     const user = await User.findOneAndUpdate(id, rest);
 
     res.json({
-        ok: true,
-        mensaje: 'Put /controlador',
         user: user
     })
 }
